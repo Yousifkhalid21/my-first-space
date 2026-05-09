@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import mindmapData from "../data/mindmaps.json";
+import mindmapData from "../../data/mindmaps.json";
 import { UI } from "../lib/ui";
 import TopNav from "../components/TopNav";
 
