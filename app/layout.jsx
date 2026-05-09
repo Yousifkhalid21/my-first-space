@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "FigaroLabs Networking Studio",
   description: "Interactive networking mind map dashboard with bilingual support."
