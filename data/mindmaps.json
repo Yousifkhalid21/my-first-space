@@ -1,0 +1,191 @@
+{
+  "mindmaps": [
+    {
+      "id": "lecture-1",
+      "title": {
+        "en": "Introduction to Computer Networking",
+        "ar": "مدخل إلى شبكات الحاسوب"
+      },
+      "description": {
+        "en": "Structured modules, premium summaries, and analytics to monetize your content responsibly.",
+        "ar": "وحدات منظمة، ملخصات مميزة، وتحليلات لتحقيق دخل مستدام."
+      },
+      "map": {
+        "id": "root",
+        "label": {
+          "en": "Introduction to\nComputer Networking",
+          "ar": "مدخل إلى\nشبكات الحاسوب"
+        },
+        "branch": "root",
+        "children": [
+          {
+            "id": "doi",
+            "label": { "en": "Definition of Internet", "ar": "تعريف الإنترنت" },
+            "branch": "doi",
+            "children": [
+              {
+                "id": "nuts",
+                "label": { "en": "Nuts and Bolts View", "ar": "الرؤية التقنية" },
+                "branch": "doi",
+                "children": [
+                  { "id": "n1", "label": { "en": "End systems / hosts", "ar": "الأنظمة الطرفية" }, "branch": "doi" },
+                  { "id": "n2", "label": { "en": "Packet switches", "ar": "مبدلات الحزم" }, "branch": "doi" },
+                  { "id": "n3", "label": { "en": "Comm. links", "ar": "روابط الاتصال" }, "branch": "doi" },
+                  { "id": "n4", "label": { "en": "Transmission rate", "ar": "معدل الإرسال" }, "branch": "doi" }
+                ]
+              },
+              {
+                "id": "svc",
+                "label": { "en": "Services View", "ar": "رؤية الخدمات" },
+                "branch": "doi",
+                "children": [
+                  { "id": "s1", "label": { "en": "Infrastructure", "ar": "البنية التحتية" }, "branch": "doi" },
+                  { "id": "s2", "label": { "en": "Web, streaming, email", "ar": "الويب والبث والبريد" }, "branch": "doi" },
+                  { "id": "s3", "label": { "en": "Programming interface", "ar": "واجهة البرمجة" }, "branch": "doi" }
+                ]
+              },
+              { "id": "non", "label": { "en": "Network of Networks", "ar": "شبكة من الشبكات" }, "branch": "doi" }
+            ]
+          },
+          {
+            "id": "proto",
+            "label": { "en": "Protocols", "ar": "البروتوكولات" },
+            "branch": "proto",
+            "children": [
+              { "id": "p1", "label": { "en": "Human vs. Network", "ar": "بشري مقابل شبكي" }, "branch": "proto" },
+              { "id": "p2", "label": { "en": "Message formats", "ar": "تنسيقات الرسائل" }, "branch": "proto" },
+              { "id": "p3", "label": { "en": "Actions on receipt", "ar": "إجراءات الاستلام" }, "branch": "proto" },
+              {
+                "id": "p4",
+                "label": { "en": "Standards", "ar": "المعايير" },
+                "branch": "proto",
+                "children": [
+                  { "id": "p4a", "label": { "en": "RFC", "ar": "RFC" }, "branch": "proto" },
+                  { "id": "p4b", "label": { "en": "IETF", "ar": "IETF" }, "branch": "proto" }
+                ]
+              },
+              { "id": "p5", "label": { "en": "HTTP, TCP, IP", "ar": "HTTP و TCP و IP" }, "branch": "proto" }
+            ]
+          },
+          {
+            "id": "is",
+            "label": { "en": "Internet Structure", "ar": "بنية الإنترنت" },
+            "branch": "is",
+            "children": [
+              {
+                "id": "ne",
+                "label": { "en": "Network Edge", "ar": "حافة الشبكة" },
+                "branch": "is",
+                "children": [
+                  { "id": "ne1", "label": { "en": "Hosts", "ar": "المضيفون" }, "branch": "is" },
+                  { "id": "ne2", "label": { "en": "Data centers", "ar": "مراكز البيانات" }, "branch": "is" }
+                ]
+              },
+              {
+                "id": "an",
+                "label": { "en": "Access Networks", "ar": "شبكات الوصول" },
+                "branch": "is",
+                "children": [
+                  { "id": "an1", "label": { "en": "Residential", "ar": "سكنية" }, "branch": "is" },
+                  { "id": "an2", "label": { "en": "Institutional", "ar": "مؤسسية" }, "branch": "is" },
+                  { "id": "an3", "label": { "en": "Mobile", "ar": "محمولة" }, "branch": "is" }
+                ]
+              },
+              {
+                "id": "nc",
+                "label": { "en": "Network Core", "ar": "نواة الشبكة" },
+                "branch": "is",
+                "children": [
+                  { "id": "nc1", "label": { "en": "Interconnected routers", "ar": "موجهات مترابطة" }, "branch": "is" },
+                  { "id": "nc2", "label": { "en": "Network of networks", "ar": "شبكة الشبكات" }, "branch": "is" }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "kc",
+            "label": { "en": "Key Concepts", "ar": "المفاهيم الأساسية" },
+            "branch": "kc",
+            "children": [
+              {
+                "id": "perf",
+                "label": { "en": "Performance", "ar": "الأداء" },
+                "branch": "kc",
+                "children": [
+                  { "id": "kc1a", "label": { "en": "Loss", "ar": "الفقد" }, "branch": "kc" },
+                  { "id": "kc1b", "label": { "en": "Delay", "ar": "التأخير" }, "branch": "kc" },
+                  { "id": "kc1c", "label": { "en": "Throughput", "ar": "المرور" }, "branch": "kc" }
+                ]
+              },
+              { "id": "kc2", "label": { "en": "Protocol layers", "ar": "طبقات البروتوكول" }, "branch": "kc" },
+              { "id": "kc3", "label": { "en": "Network security", "ar": "أمن الشبكات" }, "branch": "kc" },
+              { "id": "kc4", "label": { "en": "History of the Internet", "ar": "تاريخ الإنترنت" }, "branch": "kc" }
+            ]
+          },
+          {
+            "id": "iot",
+            "label": { "en": "Connected Devices", "ar": "الأجهزة المتصلة" },
+            "branch": "iot",
+            "children": [
+              { "id": "iot1", "label": { "en": "Mobile phones", "ar": "الهواتف المحمولة" }, "branch": "iot" },
+              { "id": "iot2", "label": { "en": "Web-enabled appliances", "ar": "الأجهزة المتصلة بالويب" }, "branch": "iot" },
+              { "id": "iot3", "label": { "en": "Wearables", "ar": "الأجهزة القابلة للارتداء" }, "branch": "iot" },
+              { "id": "iot4", "label": { "en": "Medical devices", "ar": "الأجهزة الطبية" }, "branch": "iot" },
+              { "id": "iot5", "label": { "en": "Vehicles", "ar": "المركبات" }, "branch": "iot" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "lecture-2",
+      "title": {
+        "en": "Lecture 2: Network Edge",
+        "ar": "المحاضرة ٢: حافة الشبكة"
+      },
+      "description": {
+        "en": "Focus on hosts, access networks, and edge performance metrics.",
+        "ar": "تركيز على المضيفين، شبكات الوصول، ومقاييس الأداء عند الحافة."
+      },
+      "map": {
+        "id": "root",
+        "label": {
+          "en": "Network Edge",
+          "ar": "حافة الشبكة"
+        },
+        "branch": "root",
+        "children": [
+          {
+            "id": "hosts",
+            "label": { "en": "Hosts", "ar": "المضيفون" },
+            "branch": "doi",
+            "children": [
+              { "id": "h1", "label": { "en": "Clients", "ar": "العملاء" }, "branch": "doi" },
+              { "id": "h2", "label": { "en": "Servers", "ar": "الخوادم" }, "branch": "doi" }
+            ]
+          },
+          {
+            "id": "access",
+            "label": { "en": "Access Networks", "ar": "شبكات الوصول" },
+            "branch": "proto",
+            "children": [
+              { "id": "a1", "label": { "en": "DSL / Cable", "ar": "DSL / كابل" }, "branch": "proto" },
+              { "id": "a2", "label": { "en": "Fiber", "ar": "الألياف" }, "branch": "proto" },
+              { "id": "a3", "label": { "en": "Wireless", "ar": "لاسلكي" }, "branch": "proto" }
+            ]
+          },
+          {
+            "id": "metrics",
+            "label": { "en": "Edge Metrics", "ar": "مقاييس الحافة" },
+            "branch": "kc",
+            "children": [
+              { "id": "m1", "label": { "en": "Delay", "ar": "التأخير" }, "branch": "kc" },
+              { "id": "m2", "label": { "en": "Loss", "ar": "الفقد" }, "branch": "kc" },
+              { "id": "m3", "label": { "en": "Throughput", "ar": "المرور" }, "branch": "kc" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

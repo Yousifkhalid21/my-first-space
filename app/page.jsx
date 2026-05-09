@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import mindmapData from "../data/mindmaps.json";
 
 const LABEL_COLORS = ["#38BDF8", "#4ADE80", "#FCD34D", "#F87171", "#C084FC"];
 
@@ -33,7 +34,6 @@ const UI = {
     knowledge: "Knowledge",
     quickActions: "Quick Actions",
     language: "Language",
-    subtitle: "Introduction to Computer Networking",
     aiSummary: "AI Summaries",
     insights: "Learning Insights",
     progressText: "Learning momentum",
@@ -43,9 +43,10 @@ const UI = {
     subscribe: "Subscribe",
     billing: "Subscription",
     benefitTitle: "Commercial-ready learning experience",
-    benefitBody: "Structured modules, premium summaries, and analytics to monetize your content responsibly.",
     noteTitle: "Arabic support",
-    noteBody: "Instant RTL layout and bilingual labels for global reach."
+    noteBody: "Instant RTL layout and bilingual labels for global reach.",
+    lecture: "Lecture",
+    selectLecture: "Select lecture"
   },
   ar: {
     title: "فيغارو لابس",
@@ -66,7 +67,6 @@ const UI = {
     knowledge: "المعرفة",
     quickActions: "إجراءات سريعة",
     language: "اللغة",
-    subtitle: "مدخل إلى شبكات الحاسوب",
     aiSummary: "ملخصات الذكاء الاصطناعي",
     insights: "رؤى التعلم",
     progressText: "زخم التعلم",
@@ -76,137 +76,11 @@ const UI = {
     subscribe: "اشترك",
     billing: "الاشتراك",
     benefitTitle: "تجربة تعلم جاهزة للاستخدام التجاري",
-    benefitBody: "وحدات منظمة، ملخصات مميزة، وتحليلات لتحقيق دخل مستدام.",
     noteTitle: "دعم اللغة العربية",
-    noteBody: "تخطيط من اليمين لليسار وترجمات ثنائية لانتشار عالمي."
+    noteBody: "تخطيط من اليمين لليسار وترجمات ثنائية لانتشار عالمي.",
+    lecture: "المحاضرة",
+    selectLecture: "اختر المحاضرة"
   }
-};
-
-const MIND_MAP = {
-  id: "root",
-  label: {
-    en: "Introduction to\nComputer Networking",
-    ar: "مدخل إلى\nشبكات الحاسوب"
-  },
-  branch: "root",
-  children: [
-    {
-      id: "doi",
-      label: { en: "Definition of Internet", ar: "تعريف الإنترنت" },
-      branch: "doi",
-      children: [
-        {
-          id: "nuts",
-          label: { en: "Nuts and Bolts View", ar: "الرؤية التقنية" },
-          branch: "doi",
-          children: [
-            { id: "n1", label: { en: "End systems / hosts", ar: "الأنظمة الطرفية" }, branch: "doi" },
-            { id: "n2", label: { en: "Packet switches", ar: "مبدلات الحزم" }, branch: "doi" },
-            { id: "n3", label: { en: "Comm. links", ar: "روابط الاتصال" }, branch: "doi" },
-            { id: "n4", label: { en: "Transmission rate", ar: "معدل الإرسال" }, branch: "doi" }
-          ]
-        },
-        {
-          id: "svc",
-          label: { en: "Services View", ar: "رؤية الخدمات" },
-          branch: "doi",
-          children: [
-            { id: "s1", label: { en: "Infrastructure", ar: "البنية التحتية" }, branch: "doi" },
-            { id: "s2", label: { en: "Web, streaming, email", ar: "الويب والبث والبريد" }, branch: "doi" },
-            { id: "s3", label: { en: "Programming interface", ar: "واجهة البرمجة" }, branch: "doi" }
-          ]
-        },
-        { id: "non", label: { en: "Network of Networks", ar: "شبكة من الشبكات" }, branch: "doi" }
-      ]
-    },
-    {
-      id: "proto",
-      label: { en: "Protocols", ar: "البروتوكولات" },
-      branch: "proto",
-      children: [
-        { id: "p1", label: { en: "Human vs. Network", ar: "بشري مقابل شبكي" }, branch: "proto" },
-        { id: "p2", label: { en: "Message formats", ar: "تنسيقات الرسائل" }, branch: "proto" },
-        { id: "p3", label: { en: "Actions on receipt", ar: "إجراءات الاستلام" }, branch: "proto" },
-        {
-          id: "p4",
-          label: { en: "Standards", ar: "المعايير" },
-          branch: "proto",
-          children: [
-            { id: "p4a", label: { en: "RFC", ar: "RFC" }, branch: "proto" },
-            { id: "p4b", label: { en: "IETF", ar: "IETF" }, branch: "proto" }
-          ]
-        },
-        { id: "p5", label: { en: "HTTP, TCP, IP", ar: "HTTP و TCP و IP" }, branch: "proto" }
-      ]
-    },
-    {
-      id: "is",
-      label: { en: "Internet Structure", ar: "بنية الإنترنت" },
-      branch: "is",
-      children: [
-        {
-          id: "ne",
-          label: { en: "Network Edge", ar: "حافة الشبكة" },
-          branch: "is",
-          children: [
-            { id: "ne1", label: { en: "Hosts", ar: "المضيفون" }, branch: "is" },
-            { id: "ne2", label: { en: "Data centers", ar: "مراكز البيانات" }, branch: "is" }
-          ]
-        },
-        {
-          id: "an",
-          label: { en: "Access Networks", ar: "شبكات الوصول" },
-          branch: "is",
-          children: [
-            { id: "an1", label: { en: "Residential", ar: "سكنية" }, branch: "is" },
-            { id: "an2", label: { en: "Institutional", ar: "مؤسسية" }, branch: "is" },
-            { id: "an3", label: { en: "Mobile", ar: "محمولة" }, branch: "is" }
-          ]
-        },
-        {
-          id: "nc",
-          label: { en: "Network Core", ar: "نواة الشبكة" },
-          branch: "is",
-          children: [
-            { id: "nc1", label: { en: "Interconnected routers", ar: "موجهات مترابطة" }, branch: "is" },
-            { id: "nc2", label: { en: "Network of networks", ar: "شبكة الشبكات" }, branch: "is" }
-          ]
-        }
-      ]
-    },
-    {
-      id: "kc",
-      label: { en: "Key Concepts", ar: "المفاهيم الأساسية" },
-      branch: "kc",
-      children: [
-        {
-          id: "perf",
-          label: { en: "Performance", ar: "الأداء" },
-          branch: "kc",
-          children: [
-            { id: "kc1a", label: { en: "Loss", ar: "الفقد" }, branch: "kc" },
-            { id: "kc1b", label: { en: "Delay", ar: "التأخير" }, branch: "kc" },
-            { id: "kc1c", label: { en: "Throughput", ar: "المرور" }, branch: "kc" }
-          ]
-        },
-        { id: "kc2", label: { en: "Protocol layers", ar: "طبقات البروتوكول" }, branch: "kc" },
-        { id: "kc3", label: { en: "Network security", ar: "أمن الشبكات" }, branch: "kc" },
-        { id: "kc4", label: { en: "History of the Internet", ar: "تاريخ الإنترنت" }, branch: "kc" }
-      ]
-    },
-    {
-      id: "iot",
-      label: { en: "Connected Devices", ar: "الأجهزة المتصلة" },
-      branch: "iot",
-      children: [
-        { id: "iot1", label: { en: "Mobile phones", ar: "الهواتف المحمولة" }, branch: "iot" },
-        { id: "iot2", label: { en: "Web-enabled appliances", ar: "الأجهزة المتصلة بالويب" }, branch: "iot" },
-        { id: "iot3", label: { en: "Wearables", ar: "الأجهزة القابلة للارتداء" }, branch: "iot" },
-        { id: "iot4", label: { en: "Medical devices", ar: "الأجهزة الطبية" }, branch: "iot" },
-        { id: "iot5", label: { en: "Vehicles", ar: "المركبات" }, branch: "iot" }
-      ]
-    }
-  ]
 };
 
 const V_GAP = 62;
@@ -228,7 +102,7 @@ const countLeaves = (node, expanded) => {
   return node.children.reduce((sum, child) => sum + countLeaves(child, expanded), 0);
 };
 
-const buildLayout = (node, x, y, expanded, lang) => {
+const buildLayout = (node, x, y, expanded, lang, dir) => {
   const w = nodeW(node, lang);
   const h = nodeH(node, lang);
   const result = { ...node, x, y, w, h, _ch: [] };
@@ -238,7 +112,7 @@ const buildLayout = (node, x, y, expanded, lang) => {
   for (const child of node.children) {
     const leaves = countLeaves(child, expanded);
     const childY = cy + ((leaves - 1) * V_GAP) / 2;
-    result._ch.push(buildLayout(child, x + H_GAP, childY, expanded, lang));
+    result._ch.push(buildLayout(child, x + H_GAP * dir, childY, expanded, lang, dir));
     cy += leaves * V_GAP;
   }
   return result;
@@ -268,13 +142,15 @@ const nodeContains = (node, targetId) => {
   return node.children?.some((child) => nodeContains(child, targetId)) || false;
 };
 
-const findBranch = (nodeId) => {
+const findBranch = (nodeId, rootMap) => {
   if (nodeId === "root") return null;
-  for (const child of MIND_MAP.children) if (nodeContains(child, nodeId)) return child.id;
+  for (const child of rootMap.children) if (nodeContains(child, nodeId)) return child.id;
   return null;
 };
 
 export default function HomePage() {
+  const maps = mindmapData.mindmaps;
+  const [activeMapId, setActiveMapId] = useState(maps[0]?.id ?? "");
   const [expanded, setExpanded] = useState({ root: true });
   const [focusBranch, setFocusBranch] = useState(null);
   const [hovered, setHovered] = useState(null);
@@ -283,8 +159,15 @@ export default function HomePage() {
 
   const ui = UI[lang];
   const isRtl = lang === "ar";
+  const dir = isRtl ? -1 : 1;
 
-  const root = useMemo(() => buildLayout(MIND_MAP, 120, 520, expanded, lang), [expanded, lang]);
+  const activeMap = maps.find((map) => map.id === activeMapId) ?? maps[0];
+  const mindMap = activeMap?.map;
+
+  const root = useMemo(
+    () => buildLayout(mindMap, 120, 520, expanded, lang, dir),
+    [expanded, lang, dir, mindMap]
+  );
   const nodes = useMemo(() => flatNodes(root), [root]);
   const edges = useMemo(() => flatEdges(root), [root]);
 
@@ -329,17 +212,17 @@ export default function HomePage() {
     <div dir={isRtl ? "rtl" : "ltr"} className="min-h-screen bg-ink-900 text-ink-300">
       <div className="grid-background min-h-screen">
         <header className="flex items-center justify-between px-6 py-4 border-b border-ink-700 bg-ink-900/90 backdrop-blur">
-          <div className="flex items-center gap-4">
+          <div className={`flex items-center gap-4 ${isRtl ? "rtl-row" : ""}`}>
             <div className="h-10 w-10 rounded-2xl border border-indigo-500/40 bg-indigo-500/10 flex items-center justify-center shadow-glow">
               <span className="text-indigo-300 font-semibold text-sm">FL</span>
             </div>
-            <div>
+            <div className="rtl-text">
               <div className="font-display text-xs tracking-[0.3em] text-white">{ui.title}</div>
               <div className="text-[11px] text-ink-400">{ui.tagline}</div>
             </div>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-6 text-xs text-ink-400">
+          <nav className={`hidden lg:flex items-center gap-6 text-xs text-ink-400 ${isRtl ? "rtl-row" : ""}`}>
             {[ui.dashboard, ui.mindMap, ui.resources, ui.progress].map((item) => (
               <button key={item} className="hover:text-indigo-300 transition">
                 {item}
@@ -347,7 +230,7 @@ export default function HomePage() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${isRtl ? "rtl-row" : ""}`}>
             <div className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-2 text-[11px]">
               <span className="text-ink-400">{ui.language}</span>
               <button
@@ -372,14 +255,16 @@ export default function HomePage() {
         <main className="px-6 py-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
           <section className="glass-panel rounded-3xl p-6 flex flex-col gap-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
+              <div className="rtl-text">
                 <p className="text-xs text-ink-400 uppercase tracking-[0.3em]">{ui.overview}</p>
-                <h1 className="text-2xl text-white font-display mt-2">{ui.subtitle}</h1>
+                <h1 className="text-2xl text-white font-display mt-2">
+                  {activeMap?.title?.[lang] ?? ui.benefitTitle}
+                </h1>
                 <p className="text-sm text-ink-400 mt-2 max-w-xl">
-                  {ui.benefitBody}
+                  {activeMap?.description?.[lang] ?? ""}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className={`flex items-center gap-3 ${isRtl ? "rtl-row" : ""}`}>
                 <div className="glass-panel px-4 py-2 rounded-2xl text-xs">
                   <p className="text-ink-400">{ui.progressText}</p>
                   <p className="text-indigo-300 text-lg font-semibold">68%</p>
@@ -394,14 +279,36 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] text-ink-400" htmlFor="lecture-select">
+                  {ui.lecture}
+                </label>
+                <select
+                  id="lecture-select"
+                  value={activeMapId}
+                  onChange={(event) => {
+                    setActiveMapId(event.target.value);
+                    setExpanded({ root: true });
+                    setFocusBranch(null);
+                    setSearch("");
+                  }}
+                  className="bg-ink-850 border border-ink-700 rounded-xl px-3 py-2 text-sm text-ink-300"
+                >
+                  {maps.map((map) => (
+                    <option key={map.id} value={map.id}>
+                      {map.title?.[lang] ?? map.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder={ui.search}
                 className="bg-ink-850 border border-ink-700 rounded-xl px-4 py-2 text-sm text-ink-300 w-full md:w-72"
               />
-              <div className="flex gap-2">
-                {MIND_MAP.children.map((branch, index) => (
+              <div className="flex flex-wrap gap-2">
+                {mindMap.children.map((branch, index) => (
                   <button
                     key={branch.id}
                     onClick={() =>
@@ -601,7 +508,7 @@ export default function HomePage() {
             <div className="glass-panel rounded-3xl p-5">
               <h3 className="text-sm text-white">{ui.noteTitle}</h3>
               <p className="text-xs text-ink-400 mt-3 leading-6">{ui.noteBody}</p>
-              <div className="mt-4 flex gap-2">
+              <div className={`mt-4 flex gap-2 ${isRtl ? "rtl-row" : ""}`}>
                 <button className="text-xs px-3 py-2 rounded-xl border border-ink-700 text-ink-300">
                   {ui.quickActions}
                 </button>

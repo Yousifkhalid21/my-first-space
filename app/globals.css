@@ -10,6 +10,22 @@ body {
   @apply bg-ink-900 text-ink-300 font-sans;
 }
 
+[dir="rtl"] body {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .rtl-text {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .rtl-gap {
+  gap: 0.75rem;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
