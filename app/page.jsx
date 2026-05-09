@@ -1,7 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import mindmapData from "../data/mindmaps.json";
+import { UI } from "./lib/ui";
+import TopNav from "./components/TopNav";
 
 const LABEL_COLORS = ["#38BDF8", "#4ADE80", "#FCD34D", "#F87171", "#C084FC"];
 
@@ -12,75 +15,6 @@ const C = {
   is: { main: "#FCD34D", bg: "#1A1300", border: "#B45309", glow: "#F59E0B40" },
   kc: { main: "#F87171", bg: "#1A0606", border: "#B91C1C", glow: "#EF444440" },
   iot: { main: "#C084FC", bg: "#120B1E", border: "#7C3AED", glow: "#A855F740" }
-};
-
-const UI = {
-  en: {
-    title: "FIGARO.LABS",
-    tagline: "Networking Intelligence Studio",
-    dashboard: "Dashboard",
-    mindMap: "Mind Map",
-    resources: "Resources",
-    progress: "Progress",
-    search: "Search concepts",
-    focus: "Focus",
-    overview: "Overview",
-    upgrade: "Upgrade",
-    usage: "Monthly usage",
-    plan: "Your plan",
-    pro: "Pro",
-    enterprise: "Enterprise",
-    schedule: "Schedule",
-    knowledge: "Knowledge",
-    quickActions: "Quick Actions",
-    language: "Language",
-    aiSummary: "AI Summaries",
-    insights: "Learning Insights",
-    progressText: "Learning momentum",
-    focusMode: "Focus mode",
-    explore: "Explore",
-    startTrial: "Start free trial",
-    subscribe: "Subscribe",
-    billing: "Subscription",
-    benefitTitle: "Commercial-ready learning experience",
-    noteTitle: "Arabic support",
-    noteBody: "Instant RTL layout and bilingual labels for global reach.",
-    lecture: "Lecture",
-    selectLecture: "Select lecture"
-  },
-  ar: {
-    title: "فيغارو لابس",
-    tagline: "استوديو ذكاء الشبكات",
-    dashboard: "لوحة التحكم",
-    mindMap: "الخريطة الذهنية",
-    resources: "الموارد",
-    progress: "التقدم",
-    search: "ابحث عن المفاهيم",
-    focus: "تركيز",
-    overview: "نظرة عامة",
-    upgrade: "ترقية",
-    usage: "الاستخدام الشهري",
-    plan: "خطتك",
-    pro: "محترف",
-    enterprise: "مؤسسي",
-    schedule: "الجدول",
-    knowledge: "المعرفة",
-    quickActions: "إجراءات سريعة",
-    language: "اللغة",
-    aiSummary: "ملخصات الذكاء الاصطناعي",
-    insights: "رؤى التعلم",
-    progressText: "زخم التعلم",
-    focusMode: "وضع التركيز",
-    explore: "استكشف",
-    startTrial: "ابدأ التجربة المجانية",
-    subscribe: "اشترك",
-    billing: "الاشتراك",
-    benefitTitle: "تجربة تعلم جاهزة للاستخدام التجاري",
-    noteTitle: "دعم اللغة العربية",
-    noteBody: "تخطيط من اليمين لليسار وترجمات ثنائية لانتشار عالمي.",
-    lecture: "المحاضرة",
-    selectLecture: "اختر المحاضرة"
-  }
 };
 
 const V_GAP = 62;
@@ -148,6 +82,17 @@ const findBranch = (nodeId, rootMap) => {
   return null;
 };
 
+const normalizeLabel = (label) => (label || "").replace(/\n/g, " ").trim();
+
+const collectPairs = (node, lang, parentLabel = null, results = []) => {
+  const label = normalizeLabel(node.label?.[lang]);
+  if (parentLabel && label) {
+    results.push({ parent: parentLabel, child: label });
+  }
+  node.children?.forEach((child) => collectPairs(child, lang, label, results));
+  return results;
+};
+
 export default function HomePage() {
   const maps = mindmapData.mindmaps;
   const [activeMapId, setActiveMapId] = useState(maps[0]?.id ?? "");
@@ -156,6 +101,8 @@ export default function HomePage() {
   const [hovered, setHovered] = useState(null);
   const [search, setSearch] = useState("");
   const [lang, setLang] = useState("en");
+  const [activeStudy, setActiveStudy] = useState(null);
+  const searchParams = useSearchParams();
 
   const ui = UI[lang];
   const isRtl = lang === "ar";
@@ -163,6 +110,17 @@ export default function HomePage() {
 
   const activeMap = maps.find((map) => map.id === activeMapId) ?? maps[0];
   const mindMap = activeMap?.map;
+
+  useEffect(() => {
+    const lecture = searchParams.get("lecture");
+    if (lecture && lecture !== activeMapId && maps.some((map) => map.id === lecture)) {
+      setActiveMapId(lecture);
+      setExpanded({ root: true });
+      setFocusBranch(null);
+      setSearch("");
+      setActiveStudy(null);
+    }
+  }, [searchParams, activeMapId, maps]);
 
   const root = useMemo(
     () => buildLayout(mindMap, 120, 520, expanded, lang, dir),
@@ -208,49 +166,29 @@ export default function HomePage() {
     return 0.75;
   };
 
+  const studyPairs = useMemo(() => (mindMap ? collectPairs(mindMap, lang) : []), [mindMap, lang]);
+
+  const quizItems = useMemo(
+    () =>
+      studyPairs.slice(0, 5).map((pair) => ({
+        question:
+          lang === "ar"
+            ? `أي من التالي يندرج تحت "${pair.parent}"؟`
+            : `Which topic belongs to "${pair.parent}"?`,
+        answer: pair.child
+      })),
+    [studyPairs, lang]
+  );
+
+  const flashcards = useMemo(
+    () => studyPairs.slice(0, 6).map((pair) => ({ front: pair.child, back: pair.parent })),
+    [studyPairs]
+  );
+
   return (
     <div dir={isRtl ? "rtl" : "ltr"} className="min-h-screen bg-ink-900 text-ink-300">
       <div className="grid-background min-h-screen">
-        <header className="flex items-center justify-between px-6 py-4 border-b border-ink-700 bg-ink-900/90 backdrop-blur">
-          <div className={`flex items-center gap-4 ${isRtl ? "rtl-row" : ""}`}>
-            <div className="h-10 w-10 rounded-2xl border border-indigo-500/40 bg-indigo-500/10 flex items-center justify-center shadow-glow">
-              <span className="text-indigo-300 font-semibold text-sm">FL</span>
-            </div>
-            <div className="rtl-text">
-              <div className="font-display text-xs tracking-[0.3em] text-white">{ui.title}</div>
-              <div className="text-[11px] text-ink-400">{ui.tagline}</div>
-            </div>
-          </div>
-
-          <nav className={`hidden lg:flex items-center gap-6 text-xs text-ink-400 ${isRtl ? "rtl-row" : ""}`}>
-            {[ui.dashboard, ui.mindMap, ui.resources, ui.progress].map((item) => (
-              <button key={item} className="hover:text-indigo-300 transition">
-                {item}
-              </button>
-            ))}
-          </nav>
-
-          <div className={`flex items-center gap-3 ${isRtl ? "rtl-row" : ""}`}>
-            <div className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-2 text-[11px]">
-              <span className="text-ink-400">{ui.language}</span>
-              <button
-                onClick={() => setLang("en")}
-                className={`px-2 py-0.5 rounded-full ${lang === "en" ? "bg-indigo-500 text-white" : "text-ink-400"}`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLang("ar")}
-                className={`px-2 py-0.5 rounded-full ${lang === "ar" ? "bg-indigo-500 text-white" : "text-ink-400"}`}
-              >
-                AR
-              </button>
-            </div>
-            <button className="text-xs border border-indigo-500/50 text-indigo-200 px-4 py-2 rounded-full hover:bg-indigo-500/10 transition">
-              {ui.startTrial}
-            </button>
-          </div>
-        </header>
+        <TopNav ui={ui} lang={lang} setLang={setLang} active="mindmap" isRtl={isRtl} />
 
         <main className="px-6 py-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
           <section className="glass-panel rounded-3xl p-6 flex flex-col gap-5">
@@ -291,6 +229,7 @@ export default function HomePage() {
                     setExpanded({ root: true });
                     setFocusBranch(null);
                     setSearch("");
+                    setActiveStudy(null);
                   }}
                   className="bg-ink-850 border border-ink-700 rounded-xl px-3 py-2 text-sm text-ink-300"
                 >
@@ -308,7 +247,7 @@ export default function HomePage() {
                 className="bg-ink-850 border border-ink-700 rounded-xl px-4 py-2 text-sm text-ink-300 w-full md:w-72"
               />
               <div className="flex flex-wrap gap-2">
-                {mindMap.children.map((branch, index) => (
+                {(mindMap?.children ?? []).map((branch, index) => (
                   <button
                     key={branch.id}
                     onClick={() =>
@@ -494,15 +433,71 @@ export default function HomePage() {
                 learning content.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {["Summarize", "Quiz", "Compare", "Flashcards"].map((item) => (
-                  <span
-                    key={item}
-                    className="text-[11px] px-3 py-1 rounded-full border border-ink-700 text-ink-400"
-                  >
-                    {item}
-                  </span>
-                ))}
+                <span className="text-[11px] px-3 py-1 rounded-full border border-ink-700 text-ink-400">
+                  Summarize
+                </span>
+                <button
+                  onClick={() => setActiveStudy(activeStudy === "quiz" ? null : "quiz")}
+                  className={`text-[11px] px-3 py-1 rounded-full border transition ${
+                    activeStudy === "quiz"
+                      ? "border-indigo-400 text-indigo-200"
+                      : "border-ink-700 text-ink-400 hover:border-indigo-400"
+                  }`}
+                  type="button"
+                >
+                  {ui.quiz}
+                </button>
+                <span className="text-[11px] px-3 py-1 rounded-full border border-ink-700 text-ink-400">
+                  Compare
+                </span>
+                <button
+                  onClick={() => setActiveStudy(activeStudy === "flashcards" ? null : "flashcards")}
+                  className={`text-[11px] px-3 py-1 rounded-full border transition ${
+                    activeStudy === "flashcards"
+                      ? "border-indigo-400 text-indigo-200"
+                      : "border-ink-700 text-ink-400 hover:border-indigo-400"
+                  }`}
+                  type="button"
+                >
+                  {ui.flashcards}
+                </button>
               </div>
+
+              {activeStudy === "quiz" && (
+                <div className="mt-4 rounded-2xl border border-ink-700 bg-ink-850/70 p-4">
+                  <div className="flex items-center justify-between text-xs text-ink-400">
+                    <span>{ui.quizTitle}</span>
+                    <span>{ui.studyFromMap}</span>
+                  </div>
+                  <ul className="mt-4 space-y-3">
+                    {quizItems.map((item, index) => (
+                      <li key={`${item.answer}-${index}`}>
+                        <p className="text-xs text-ink-200">{item.question}</p>
+                        <p className="text-[11px] text-ink-400 mt-1">
+                          {ui.answer}: {item.answer}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {activeStudy === "flashcards" && (
+                <div className="mt-4 rounded-2xl border border-ink-700 bg-ink-850/70 p-4">
+                  <div className="flex items-center justify-between text-xs text-ink-400">
+                    <span>{ui.flashcardsTitle}</span>
+                    <span>{ui.studyFromMap}</span>
+                  </div>
+                  <div className="mt-4 grid gap-3">
+                    {flashcards.map((card, index) => (
+                      <div key={`${card.front}-${index}`} className="border border-ink-700 rounded-xl p-3">
+                        <p className="text-xs text-ink-200">{card.front}</p>
+                        <p className="text-[11px] text-ink-400 mt-2">{card.back}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="glass-panel rounded-3xl p-5">
